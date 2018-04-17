@@ -1,15 +1,15 @@
 // @flow
 
-import Phantom from './phantom';
+const Phantom =require('./phantom');
 
 /**
  * Page class that proxies everything to phantomjs
  */
-export default class Page {
-  $phantom: Phantom;
-  target: string;
+module.exports= class Page {
+  // $phantom: Phantom;
+  // target: string;
 
-  constructor(phantom: Phantom, pageId: string) {
+  constructor(phantom/*: Phantom*/, pageId/*: string*/) {
     this.target = `page$${pageId}`;
     this.$phantom = phantom;
   }
@@ -23,7 +23,7 @@ export default class Page {
      * run on phantom, and thus, all the closure info wont work
      * @returns {*}
      */
-  on(event: string, runOnPhantom: boolean = false, listener: Function, ...args: any[]) {
+  on(event/*: string*/, runOnPhantom/*: boolean*/ = false, listener/*: Function*/, ...args/*: any[]*/) {
     let mustRunOnPhantom;
     let callback;
     let params;
@@ -47,35 +47,35 @@ export default class Page {
      * @param event the event name
      * @returns {*}
      */
-  off(event: string) {
+  off(event/*: string*/) {
     return this.$phantom.off(event, this.target);
   }
 
   /**
      * Invokes an asynchronous method
      */
-  invokeAsyncMethod(...args: any[]) {
+  invokeAsyncMethod(...args/*: any[]*/) {
     return this.$phantom.execute(this.target, 'invokeAsyncMethod', args);
   }
 
   /**
      * Invokes a method
      */
-  invokeMethod(...args: any[]) {
+  invokeMethod(...args/*: any[]*/) {
     return this.$phantom.execute(this.target, 'invokeMethod', args);
   }
 
   /**
      * Defines a method
      */
-  defineMethod(name: string, definition: Function) {
+  defineMethod(name/*: string*/, definition/*: Function*/) {
     return this.$phantom.execute(this.target, 'defineMethod', [name, definition]);
   }
 
   /**
      * Gets or sets a property
      */
-  property(...args: any[]): Promise<*> {
+  property(...args/*: any[]*/)/*: Promise<*> */{
     if (args.length === 2 && typeof args[1] === 'function') {
       this.$phantom.logger.warn('page.property(key, function(){}) will be deprecated in the next major release.');
       this.$phantom.logger.warn('Please use page.on(key, function(){}) instead. See README for more details.');
@@ -86,11 +86,11 @@ export default class Page {
   /**
      * Gets or sets a setting
      */
-  setting(...args: any[]): Promise<*> {
+  setting(...args/*: any[]*/)/*: Promise<*>*/ {
     return this.$phantom.execute(this.target, 'setting', args);
   }
 
-  cookies(): Promise<*> {
+  cookies()/*: Promise<*> */{
     return this.property('cookies');
   }
 }
@@ -122,14 +122,14 @@ const methods = [
 
 asyncMethods.forEach((method) => {
   // $FlowFixMe: no way to provide dynamic functions
-  Page.prototype[method] = function _(...args: any[]) {
+  Page.prototype[method] = function _(...args/*: any[]*/) {
     return this.invokeAsyncMethod.apply(this, [method, ...args]);
   };
 });
 
 methods.forEach((method) => {
   // $FlowFixMe: no way to provide dynamic functions
-  Page.prototype[method] = function _(...args: any[]) {
+  Page.prototype[method] = function _(...args/*: any[]*/) {
     return this.invokeMethod.apply(this, [method, ...args]);
   };
 });

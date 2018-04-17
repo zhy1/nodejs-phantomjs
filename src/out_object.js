@@ -1,17 +1,16 @@
-// @flow
-import crypto from 'crypto';
-import Phantom from './phantom';
+const crypto = require('crypto');
+const Phantom = require('./phantom');
 
-export default class OutObject {
-  $phantom: Phantom;
-  target: string;
+module.exports = class OutObject {
+  // $phantom: Phantom;
+  // target: string;
 
-  constructor(phantom: Phantom) {
+  constructor(phantom/*: Phantom*/) {
     this.$phantom = phantom;
     this.target = `OutObject$${crypto.randomBytes(16).toString('hex')}`;
   }
 
-  property(name: string) {
+  property(name/*: string*/) {
     return this.$phantom.execute(this.target, 'property', [name]);
   }
 }
